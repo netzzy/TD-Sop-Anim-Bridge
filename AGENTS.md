@@ -62,3 +62,12 @@ When the user proposes a change in strategy, positioning, architecture, or UX, D
 3. Only then give a position: which side is stronger and why. `I do not know, need data` is a valid answer.
 
 If you catch yourself simply repackaging the user's words into an argument, say so directly.
+
+## No Hardcoding — 100% Data-Driven
+
+For model/provider-specific behavior, prefer data-driven configuration over hardcoded branches.
+
+- NEVER encode model or provider behavior with checks like `if model.startswith('midjourney')` or `if provider == 'kie_ai'`.
+- ALWAYS represent model/provider capabilities and parsing rules in YAML config, using fields such as `response_parser`, `requires_image`, and `asset_type`.
+- Test every model/provider decision with this question: `Will this break when we add 100 new models?`
+- If the answer is yes, refactor the behavior into YAML-driven configuration.

@@ -1,5 +1,11 @@
 # Changelog
 
+## [2026-06-14] Add Data-Driven Configuration Rule
+
+- Added a project rule banning hardcoded model/provider behavior in favor of YAML-driven configuration.
+- Affected files: `AGENTS.md`, `docs/changelog.md`.
+- Migrations: none.
+
 ## [2026-06-14] Add Agent Review Discipline Rules
 
 - Added a project rule requiring agents to challenge strategy, positioning, architecture, and UX changes before agreeing.
