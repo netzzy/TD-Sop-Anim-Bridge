@@ -34,3 +34,18 @@
 - Рассмотреть промежуточный bridge через Houdini только как fallback, а не как основную цель.
 - Документировать ограничения: меняющаяся топология, большие кэши, атрибуты, FPS, frame range, scale/orientation differences между TD, Houdini и Blender.
 
+## Changelog — Document All Changes
+
+ALWAYS update `docs/changelog.md` when making changes.
+
+- Bug fixes, new features, refactors, documentation updates, project rule changes, and other repository changes all go in the changelog.
+- Format: `## [YYYY-MM-DD] Brief Title` followed by bullet points.
+- Include affected files and migrations. If there are no migrations, write `Migrations: none`.
+
+## Investigate Before Answering
+
+ALWAYS read and understand relevant files before proposing or making code edits.
+
+- Never speculate about code, project behavior, or implementation details that have not been inspected.
+- If the relevant files are not obvious, search the repository first and inspect the files that define the behavior being changed.
+- State assumptions explicitly when local evidence is incomplete.
