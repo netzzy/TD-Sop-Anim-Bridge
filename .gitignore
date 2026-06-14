@@ -1,0 +1,47 @@
+# TouchDesigner
+Backup/
+backups/
+Log/
+CrashAutoSave/
+Autosave/
+autosave/
+*.toe.*
+*.[0-9]*.toe
+*.toxsave
+*.tmp
+*.temp
+*.log
+
+# Local secrets / machine-specific agent config
+.mcp.json
+.env
+.env.*
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+
+# Blender local backup files
+*.blend[0-9]
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+SRC/.vs/
+
+# Local captures / diagnostics
+screenshots/
+.codex_tmp/
+
+# External installers / drivers (not project source)
+/downloads/
+/drivers/
