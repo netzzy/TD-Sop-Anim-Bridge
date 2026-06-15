@@ -19,11 +19,9 @@ autosave/
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
 
-# Blender local backup files
-*.blend[0-9]
-
 # Python
 __pycache__/
+tools/__pycache__/
 *.pyc
 *.pyo
 
@@ -37,10 +35,27 @@ Desktop.ini
 .vscode/
 .idea/
 SRC/.vs/
+src/.vs/
 
 # Local captures / diagnostics
 screenshots/
 .codex_tmp/
+TDImportCache/
+
+# Exporter output artifacts
+export/
+_tdsopusd_temp/
+
+# USD validation virtualenv (usd-core)
+tools/.venv-usd/
+
+# Internal development backlog (not published)
+docs/backlog.md
+
+# Local documentation dumps
+Docs_TD/
+Docs_MD/
+Docs_USD/
 
 # External installers / drivers (not project source)
 /downloads/
