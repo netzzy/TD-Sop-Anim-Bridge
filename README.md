@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/assets/td-to-usd.png" alt="TD-SOP-USD-Anim-Bridge" width="600">
+</p>
+
 # TD-SOP-USD-Anim-Bridge
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -6,7 +10,7 @@ TouchDesigner SOP animation to self-contained USD caches.
 
 ## Overview
 
-Build procedural (or any) SOP animation in TouchDesigner and write it straight to USD — a single self-contained cache that every major 3D package reads, so you can render it in Blender, Houdini, or wherever you work. The drop-in component writes readable `.usda` out of the box, and compact `.usdc` after installing the optional usd-core sidecar.
+Build procedural (or any) SOP animation in TouchDesigner and write it straight to USD - a single self-contained cache that every major 3D package reads, so you can render it in Blender, Houdini, or wherever you work. The drop-in component writes readable `.usda` out of the box, and compact `.usdc` after installing the optional usd-core sidecar.
 
 ## Features
 
@@ -77,7 +81,7 @@ For a 60 FPS TouchDesigner simulation that should become a 30 FPS USD cache whil
 
 `.usda` stays readable and is useful for debugging. `.usdc` is much smaller and better for production transfer, but the sidecar transcode materializes the full layer in RAM.
 
-`Half Precision` trades file size for accuracy: `Safe Half` shrinks the file by halving attributes where 16-bit loss is hard to see (normals, UVs, colors, velocities), while `All Half` shrinks it further by also halving point positions and widths — visible as jitter or banding on large or fine geometry. Pick `Safe Half` as a default and reach for `All Half` only when size matters more than positional precision.
+`Half Precision` trades file size for accuracy: `Safe Half` shrinks the file by halving attributes where 16-bit loss is hard to see (normals, UVs, colors, velocities), while `All Half` shrinks it further by also halving point positions and widths - visible as jitter or banding on large or fine geometry. Pick `Safe Half` as a default and reach for `All Half` only when size matters more than positional precision.
 
 Animated export chunks, setup logs, and temporary `.usda` files are written under the `Temp Folder` parameter (`_tdsopusd_temp/` by default) and removed on normal completion/cancel/failure.
 

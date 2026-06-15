@@ -1,5 +1,12 @@
 # Changelog
 
+## [2026-06-15] Add Project Logo to README
+
+- Added the project logo (`docs/assets/td-to-usd.png`) to the top of the README and
+  normalized README punctuation to plain ASCII.
+- Affected files: `README.md`, `docs/assets/td-to-usd.png`, `docs/changelog.md`.
+- Migrations: none.
+
 ## [2026-06-15] Remove Legacy Agent Instruction Shim
 
 - Removed the legacy root-level agent instruction shim; `AGENTS.md` remains the
