@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="docs/assets/td-to-usd.png" alt="TD-SOP-USD-Anim-Bridge" width="600">
-</p>
+<img src="docs/assets/td-to-usd.png" alt="TD-SOP-USD-Anim-Bridge" width="600">
 
 # TD-SOP-USD-Anim-Bridge
 
