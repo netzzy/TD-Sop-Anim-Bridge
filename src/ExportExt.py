@@ -19,8 +19,9 @@ the transcode materializes the full layer in usd-core outside TD.
 Whether topology changes is declared by the user (Topologychanges par),
 not detected by pre-scanning the range.
 
-Geometry kind is chosen from the data: no prims (or particle/point
-prims) -> Points; Poly/Mesh prims -> Mesh.
+Geometry kind is chosen from the data: particle/point prims -> Points;
+Poly/Mesh prims -> Mesh. Empty animated frames preserve the established
+kind instead of switching schemas mid-export.
 """
 
 import os
@@ -108,22 +109,38 @@ class ExportExt:
 						state['written'], state['frameCount']))
 
 			ir = self._sampleSop(self._inputSop())
+			outputFrame = state['frames'][state['written']]
 			if state['sections'] is None:
-				state['isMesh'] = ir['isMesh']
-				state['firstSchema'] = self._schema(ir)
-				state['firstTopo'] = self._topoKey(ir)
-				state['sections'] = self._buildSections(
-					ir, state['isMesh'], state['topoVaries'], state['tmpdir'])
+				if self._isEmptyIr(ir):
+					state['pendingEmptyFrames'].append((f, outputFrame, ir))
+					state['written'] += 1
+					state['writtenFrames'].add(f)
+					if state['written'] >= state['frameCount']:
+						self._initPlaybackSections(state, ir)
+						self._flushPendingEmptyFrames(state)
+						self._finishPlaybackExport()
+						return
+					self._publishPlaybackState(state)
+					self._setProgress(float(state['written']) / state['frameCount'])
+					self._setExportStatus('Exporting %d/%d'
+						% (state['written'], state['frameCount']))
+					return
+				self._initPlaybackSections(state, ir)
+				self._flushPendingEmptyFrames(state)
 			elif self._schema(ir) != state['firstSchema']:
-				raise RuntimeError(
-					'Geometry kind or attribute set/sizes change at frame '
-					'%d. Counts/topology may vary, the schema may not.' % f)
+				if self._isEmptyIr(ir):
+					ir = self._emptyIrForSchema(ir, state['firstSchema'])
+				else:
+					raise RuntimeError(
+						'Geometry kind or attribute set/sizes change at frame '
+						'%d. Counts/topology may vary, the schema may not.' % f)
 			if not state['topoVaries'] and self._topoKey(ir) != state['firstTopo']:
 				raise RuntimeError(
 					'Topology changes at frame %d but "Topology Changes" '
 					'is off. Enable it and re-export.' % f)
 			self._streamFrameStep(state['sections'], ir, f,
-				state['written'] == 0, state['frames'][state['written']])
+				state['streamed'] == 0, outputFrame)
+			state['streamed'] += 1
 			state['written'] += 1
 			state['writtenFrames'].add(f)
 			self._publishPlaybackState(state)
@@ -590,6 +607,28 @@ class ExportExt:
 			'written': state.get('written', 0),
 		})
 
+	def _initPlaybackSections(self, state, ir):
+		state['isMesh'] = ir['isMesh']
+		state['firstSchema'] = self._schema(ir)
+		state['firstTopo'] = self._topoKey(ir)
+		state['sections'] = self._buildSections(
+			ir, state['isMesh'], state['topoVaries'], state['tmpdir'])
+
+	def _flushPendingEmptyFrames(self, state):
+		pending = state.get('pendingEmptyFrames') or []
+		if not pending:
+			return
+		for sourceFrame, outputFrame, pendingIr in pending:
+			ir = self._emptyIrForSchema(pendingIr, state['firstSchema'])
+			if not state['topoVaries'] and self._topoKey(ir) != state['firstTopo']:
+				raise RuntimeError(
+					'Topology changes at frame %d but "Topology Changes" '
+					'is off. Enable it and re-export.' % sourceFrame)
+			self._streamFrameStep(state['sections'], ir, sourceFrame,
+				state['streamed'] == 0, outputFrame)
+			state['streamed'] += 1
+		state['pendingEmptyFrames'] = []
+
 	def _startPlaybackExport(self, fmt, finalPath, usdaPath, tmpUsda):
 		if self._playbackExport and self._playbackExport.get('active'):
 			raise RuntimeError('An animated export is already active')
@@ -622,7 +661,9 @@ class ExportExt:
 			'firstSchema': None,
 			'firstTopo': None,
 			'written': 0,
+			'streamed': 0,
 			'writtenFrames': set(),
+			'pendingEmptyFrames': [],
 			'prev': self._timeSnapshot(),
 		}
 
@@ -796,6 +837,37 @@ class ExportExt:
 			primElems = [pr for pr, _ in faceData]
 			ir['primAttribs'] = self._readAttribs(primElems, sop.primAttribs)
 		return ir
+
+	def _isEmptyIr(self, ir):
+		return (ir['numPoints'] == 0 and ir['numPrims'] == 0
+			and ir['numVertices'] == 0)
+
+	def _emptyIrForSchema(self, ir, schema):
+		"""Return an empty-frame IR coerced to an already chosen USD schema.
+
+		An empty SOP has no primitive classes, so it cannot prove whether the
+		source is a mesh or point cloud. Animated export must keep the USD prim
+		type stable and treat that as varying topology/counts, not a schema
+		change.
+		"""
+		out = dict(ir)
+		out['numPoints'] = 0
+		out['numPrims'] = 0
+		out['numVertices'] = 0
+		out['P'] = []
+		out['isMesh'] = schema[0]
+		byClass = dict((klass, attrs) for klass, attrs in schema[1:])
+		for klass, key in (('point', 'pointAttribs'),
+				('vertex', 'vertexAttribs'), ('prim', 'primAttribs')):
+			out[key] = dict((name, {'size': size, 'values': []})
+				for name, size in byClass.get(klass, ()))
+		if out['isMesh']:
+			out['faceVertexCounts'] = []
+			out['faceVertexIndices'] = []
+		else:
+			out.pop('faceVertexCounts', None)
+			out.pop('faceVertexIndices', None)
+		return out
 
 	def _faces(self, sop):
 		"""Resolve every prim to one or more polygon faces.

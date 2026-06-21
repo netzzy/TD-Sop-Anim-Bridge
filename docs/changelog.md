@@ -1,5 +1,18 @@
 # Changelog
 
+## [2026-06-21] Preserve Mesh Schema on Empty Animated Frames
+
+- Fixed animated exports where a mesh sequence contains fully empty frames. The
+  playback writer now defers schema creation through leading empty frames and
+  coerces later empty frames to the established Mesh/Points schema instead of
+  misclassifying `0 prims` as `UsdGeomPoints`.
+- This keeps “objects exist / no objects exist” changes in the topology/counts
+  bucket, so they work with the existing `Topology Changes` toggle instead of
+  failing as a geometry-kind schema change.
+- Affected files: `src/ExportExt.py`, `docs/changelog.md`,
+  `TD-SOP-USD-Anim-Bridge.toe`, `TD_SOP_USD_Anim_Bridge.tox`.
+- Migrations: none.
+
 ## [2026-06-15] Add Project Logo to README
 
 - Added the project logo (`docs/assets/td-to-usd.png`) to the top of the README and
