@@ -26,8 +26,8 @@ as explicit experimental choices:
   attributes remapped into curve vertex order.
 - Native plugins are optional. Missing DLLs or unsupported platforms must not break
   the default SOP Python exporter.
-- Native plugin paths are authored as `project.folder` expressions inside the
-  component, not as absolute developer-machine paths.
+- Native plugin paths are stored as project-relative expressions so the component
+  remains portable between projects and machines.
 
 ## Consequences
 

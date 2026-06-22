@@ -9,8 +9,8 @@
 - Extended the animated `.usdc` chunk builder and `tools/validate_usd.py` to
   create and validate `BasisCurves`, including `curveVertexCounts`, widths, and
   primvar sizes.
-- Documented the Native POP curve path and the remaining mixed mesh+curve POP
-  limitation.
+- Refined README wording so native modes are presented as optional acceleration
+  paths, with detailed implementation constraints kept in native docs/ADR.
 - Affected files: `native/td_pop_usd_writer/TDPopUsdWriter.cpp`,
   `tools/build_usdc_from_chunks.py`, `tools/validate_usd.py`, `README.md`,
   `native/README.md`, `docs/adr/0011-experimental-native-backends.md`,
@@ -26,9 +26,8 @@
 - Remapped POP vertex and primitive attributes through the filtered topology order,
   keeping `primvars:T`, `primvars:st`, and other face-varying/uniform attributes
   aligned with the authored `faceVertexIndices` count for `.usda`/`.usdc` parity.
-- Documented the Blender importer caveat that valid USD `float4[] faceVarying`
-  primvars such as `T` may be preserved in USD but not converted to Blender mesh
-  attributes.
+- Confirmed that USD preserves valid `float4[] faceVarying` primvars such as
+  `T`, even when a DCC importer does not expose them as mesh attributes.
 - Affected files: `native/td_pop_usd_writer/TDPopUsdWriter.cpp`,
   `README.md`, `native/README.md`, `docs/adr/0011-experimental-native-backends.md`,
   `docs/changelog.md`, `TD-SOP-USD-Anim-Bridge.toe`,
@@ -48,8 +47,8 @@
   vertex/primitive custom attributes before writing output.
 - Experimental Native POP uses a second POP input and preserves point, vertex, and
   primitive float attributes through the existing chunk sidecar path.
-- Native plugin parameters are authored from `project.folder` expressions so the
-  component does not save absolute developer-machine DLL paths.
+- Native plugin DLL paths are stored as project-relative expressions so copied
+  `.toe`/`.tox` files do not keep local absolute build paths.
 - Native command parameters are reset after native exports so temporary folders and
   status-file paths are not persisted into saved `.toe`/`.tox` files.
 - Validated Compatible SOP Python, Experimental Native SOP, and Experimental
