@@ -1,5 +1,11 @@
 # Changelog
 
+## [2026-06-22] Save TouchDesigner Project State
+
+- Persisted the current TouchDesigner project state in the `.toe` file.
+- Affected files: `TD-SOP-USD-Anim-Bridge.toe`, `docs/changelog.md`.
+- Migrations: none.
+
 ## [2026-06-22] Add Native POP BasisCurves Export
 
 - Added Experimental Native POP support for line-strip and 2-point line-only POP
